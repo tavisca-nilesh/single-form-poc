@@ -1,0 +1,84 @@
+<form *ngIf="form" [formGroup]="form" class="horizontal-form">
+  <div class="form-group">
+    <label for="journeyType">Journey Type</label>
+    <select
+      formControlName="journeyType"
+      class="custom-select"
+      (change)="onJourneyTypeChange()"
+    >
+      <option value="oneWay">One Way</option>
+      <option value="roundTrip">Round Trip</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="passengerCount">Passenger Count</label>
+    <input
+      type="number"
+      formControlName="passengerCount"
+      class="custom-input"
+      min="1"
+      max="4"
+    />
+  </div>
+  <div class="form-group">
+    <label for="location">Location</label>
+    <input
+      type="text"
+      formControlName="location"
+      class="custom-input"
+      (input)="onLocationInputChange()"
+    />
+    <ul *ngIf="suggestedLocations.length > 0">
+      <li
+        *ngFor="let location of suggestedLocations"
+        (click)="selectLocation(location)"
+      >
+        {{ location }}
+      </li>
+    </ul>
+  </div>
+  <div class="form-group">
+    <label for="journeyDate">Journey Date</label>
+    <input type="date" formControlName="journeyDate" class="custom-input" />
+  </div>
+
+  <button
+    type="button"
+    (click)="onSearch()"
+    [disabled]="!form.valid"
+    class="custom-button"
+  >
+    Search
+  </button>
+
+  <div *ngIf="form.invalid" class="error-summary">
+    <h4>Error Summary:</h4>
+    <ul>
+      <li *ngIf="form.get('journeyType')?.hasError('required')">
+        Journey Type is required
+      </li>
+      <li *ngIf="form.get('passengerCount')?.hasError('required')">
+        Passenger Count is required
+      </li>
+      <li
+        *ngIf="
+          form.get('passengerCount')?.hasError('min') ||
+          form.get('passengerCount')?.hasError('max')
+        "
+      >
+        Passenger Count must be between 1 and 4
+      </li>
+      <li *ngIf="form.get('location')?.hasError('required')">
+        Location is required
+      </li>
+      <li *ngIf="form.get('journeyDate')?.hasError('required')">
+        Journey Date is required
+      </li>
+    </ul>
+  </div>
+</form>
+
+<div *ngIf="formDataJSON" class="json-output">
+  <h4>Form Data in JSON Format:</h4>
+  <pre>{{ formDataJSON }}</pre>
+</div>
