@@ -1,4 +1,4 @@
-import { SampleState } from "./reducers/sample.reducer"; // Import your specific state slices as needed
+import { SampleState } from "./reducers/sample.reducer";
 
 export interface AppState {
   sample: SampleState;
