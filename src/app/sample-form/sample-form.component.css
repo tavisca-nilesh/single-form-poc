@@ -1,7 +1,6 @@
-
-
 .error-summary {
   flex-basis: 100%;
+  color: red;
 }
 
 .json-output {
@@ -59,7 +58,8 @@ label {
   display: block;
 }
 
-input, select {
+input,
+select {
   width: 90%;
   padding: 8px;
   border: 1px solid #ccc;

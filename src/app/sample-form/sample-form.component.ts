@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Store } from "@ngrx/store";
 import { LoadSuggestedLocations } from "../store/actions";
 import { AppState } from "../store/app.state";
@@ -13,54 +13,87 @@ import { Location } from "../interfaces/locations";
 })
 export class SampleFormComponent implements OnInit {
   form: FormGroup | null = null;
-  suggestedLocations: Location[] = [];
+  suggestedLocations: Location[][] = [];
   formDataJSON: string | null = null;
   private loadLocations$ = this.store.select(loadLocations);
 
+  currentIndex = 0;
   constructor(private fb: FormBuilder, private store: Store<AppState>) {}
 
   ngOnInit() {
+    this.suggestedLocations.push([]);
     this.form = this.fb.group({
-      journeyType: ["roundTrip", Validators.required],
+      journeyType: ["oneWay", Validators.required],
       passengerCount: [
         1,
         [Validators.required, Validators.min(1), Validators.max(4)],
       ],
-      location: ["", Validators.required],
-      startDate: ["", Validators.required],
-      returnDate: [""],
+      journeys: this.fb.array([this.createJourneyGroup()]),
     });
 
     this.form.get("journeyType")?.valueChanges.subscribe((value) => {
-      const returnDateControl = this.form?.get("returnDate");
-
       if (value === "roundTrip") {
-        returnDateControl?.setValidators([Validators.required]);
+        const firstJourney = this.journeys.at(0) as FormGroup;
+        firstJourney.get("returnDate")?.setValidators([Validators.required]);
+        firstJourney.get("returnDate")?.updateValueAndValidity();
       } else {
-        returnDateControl?.clearValidators();
+        this.journeys.controls.forEach((journey) => {
+          journey.get("returnDate")?.clearValidators();
+          journey.get("returnDate")?.updateValueAndValidity();
+        });
       }
 
-      returnDateControl?.updateValueAndValidity();
+      this.onJourneyTypeChange();
     });
 
     this.loadLocations$.subscribe((suggestedLocations) => {
-      this.suggestedLocations = [...suggestedLocations];
+      this.suggestedLocations[this.currentIndex] = [...suggestedLocations];
     });
   }
 
-  onJourneyTypeChange() {}
+  get journeys() {
+    return this.form?.get("journeys") as FormArray;
+  }
 
-  onLocationInputChange() {
-    this.suggestedLocations = [];
-    const location = this.form?.get("location")?.value;
-    if (location && location.length >= 3) {
-      this.store.dispatch(LoadSuggestedLocations({ searchTerm: location }));
+  createJourneyGroup(): FormGroup {
+    return this.fb.group({
+      location: [null, Validators.required],
+      startDate: ["", Validators.required],
+      returnDate: [""],
+    });
+  }
+
+  addJourney() {
+    this.suggestedLocations.push([]);
+    this.journeys.push(this.createJourneyGroup());
+  }
+
+  removeJourney(index: number) {
+    if (this.journeys.length > 1) {
+      this.journeys.removeAt(index);
+      this.suggestedLocations.splice(index, 1);
     }
   }
 
-  selectLocation(location: any) {
-    this.form?.get("location")?.setValue(location);
+  onJourneyTypeChange() {
+    while (this.journeys.length > 1) {
+      this.journeys.removeAt(1);
+      this.suggestedLocations.splice(1, 1);
+    }
+  }
+
+  onLocationInputChange(event: any, index: number) {
+    this.currentIndex = index;
+    const searchTerm = event?.target?.value;
     this.suggestedLocations = [];
+    if (searchTerm && searchTerm.length >= 3) {
+      this.store.dispatch(LoadSuggestedLocations({ searchTerm: searchTerm }));
+    }
+  }
+
+  selectLocation(airport: Location, index: number) {
+    this.journeys.at(index).get("location")?.setValue(airport);
+    this.suggestedLocations[index] = [];
   }
 
   onSearch() {

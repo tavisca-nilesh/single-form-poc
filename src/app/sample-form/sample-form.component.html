@@ -9,6 +9,7 @@
       >
         <option value="oneWay">One Way</option>
         <option value="roundTrip">Round Trip</option>
+        <option value="multiCity">Multi City</option>
       </select>
     </div>
     <div class="form-group">
@@ -22,37 +23,73 @@
       />
     </div>
   </div>
-  <div class="form-row row2">
-    <div class="form-group">
-      <label for="location">Location</label>
-      <input
-        type="text"
-        formControlName="location"
-        class="custom-input"
-        (input)="onLocationInputChange()"
-        [value]="form.get('location')?.value?.name"
-      />
-      <ul class="suggestions" *ngIf="suggestedLocations.length > 0">
-        <li
-          class="suggestion-item"
-          *ngFor="let location of suggestedLocations"
-          (click)="selectLocation(location)"
-        >
-          {{ location.name }}
-        </li>
-      </ul>
-    </div>
-    <div class="form-group">
-      <label for="startDate">Start Date</label>
-      <input type="date" formControlName="startDate" class="custom-input" />
-    </div>
+  <div formArrayName="journeys">
     <div
-      class="form-group"
-      *ngIf="form?.get('journeyType')?.value === 'roundTrip'"
+      class="form-row row2"
+      *ngFor="let journey of journeys.controls; let i = index"
     >
-      <label for="returnDate">Return Date</label>
-      <input type="date" formControlName="returnDate" class="custom-input" />
+      <div [formGroupName]="i">
+        <div style="display: flex; flex-direction: row">
+          <div class="form-group">
+            <label for="location">Location</label>
+            <input
+              type="text"
+              formControlName="location"
+              class="custom-input"
+              (input)="onLocationInputChange($event, i)"
+              [value]="journey.get('location')?.value?.name || ''"
+            />
+            <ul
+              class="suggestions"
+              *ngIf="suggestedLocations[i] && suggestedLocations[i].length > 0"
+            >
+              <li
+                class="suggestion-item"
+                *ngFor="let location of suggestedLocations[i]"
+                (click)="selectLocation(location, i)"
+              >
+                {{ location.name }}
+              </li>
+            </ul>
+          </div>
+          <div class="form-group">
+            <label for="startDate">Start Date</label>
+            <input
+              type="date"
+              formControlName="startDate"
+              class="custom-input"
+            />
+          </div>
+          <div
+            class="form-group"
+            *ngIf="form?.get('journeyType')?.value === 'roundTrip'"
+          >
+            <label for="returnDate">Return Date</label>
+            <input
+              type="date"
+              formControlName="returnDate"
+              class="custom-input"
+            />
+          </div>
+          <button
+            type="button"
+            *ngIf="
+              form.get('journeyType')?.value === 'multiCity' &&
+              i >= 1 &&
+              i === journeys.controls.length - 1
+            "
+            (click)="removeJourney(i)"
+          >
+            X
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
+  <div *ngIf="form.get('journeyType')?.value === 'multiCity'" class="form-row">
+    <button type="button custom-button" (click)="addJourney()">
+      Add Journey
+    </button>
   </div>
   <div class="form-row">
     <button
@@ -65,7 +102,7 @@
     </button>
   </div>
   <div *ngIf="form.invalid" class="error-summary">
-    <h4>Error Summary:</h4>
+    <h4>Fill All Required Fields</h4>
     <ul>
       <li *ngIf="form.get('journeyType')?.hasError('required')">
         Journey Type is required
@@ -83,9 +120,6 @@
       </li>
       <li *ngIf="form.get('location')?.hasError('required')">
         Location is required
-      </li>
-      <li *ngIf="form.get('journeyDate')?.hasError('required')">
-        Journey Date is required
       </li>
     </ul>
   </div>
