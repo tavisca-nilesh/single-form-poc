@@ -4,9 +4,10 @@ import {
   LoadSuggestedLocationsSuccess,
   SampleActionTypes,
 } from "../actions";
+import { Location } from 'src/app/interfaces/locations';
 
 export interface SampleState {
-  suggestedLocations: string[];
+  suggestedLocations: Location[];
 }
 
 export const initialState: SampleState = {

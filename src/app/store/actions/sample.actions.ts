@@ -1,4 +1,5 @@
 import { Action, createAction, props } from "@ngrx/store";
+import { Location } from 'src/app/interfaces/locations';
 
 export enum SampleActionTypes {
   LoadSuggestedLocations = "[Sample Form] Load Suggested Locations",
@@ -12,5 +13,5 @@ export const LoadSuggestedLocations = createAction(
 
 export const LoadSuggestedLocationsSuccess = createAction(
   SampleActionTypes.LoadSuggestedLocationsSuccess,
-  props<{ suggestedLocations: string[] }>()
+  props<{ suggestedLocations: Location[] }>()
 );

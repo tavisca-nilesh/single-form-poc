@@ -27,19 +27,26 @@
       formControlName="location"
       class="custom-input"
       (input)="onLocationInputChange()"
+      [value]="form.get('location')?.value?.name"
     />
-    <ul *ngIf="suggestedLocations.length > 0">
+    <ul class="suggestions" *ngIf="suggestedLocations.length > 0">
       <li
+        class="suggestion-item"
         *ngFor="let location of suggestedLocations"
         (click)="selectLocation(location)"
       >
-        {{ location }}
+        {{ location.name }}
       </li>
     </ul>
   </div>
   <div class="form-group">
-    <label for="journeyDate">Journey Date</label>
-    <input type="date" formControlName="journeyDate" class="custom-input" />
+    <label for="startDate">Start Date</label>
+    <input type="date" formControlName="startDate" class="custom-input" />
+  </div>
+
+  <div class="form-group" *ngIf="form?.get('journeyType')?.value === 'roundTrip'">
+    <label for="returnDate">Return Date</label>
+    <input type="date" formControlName="returnDate" class="custom-input" />
   </div>
 
   <button
