@@ -1,10 +1,11 @@
 import { createReducer, on } from "@ngrx/store";
 import {
+  ClearSuggestedLocations,
   LoadSuggestedLocations,
   LoadSuggestedLocationsSuccess,
   SampleActionTypes,
 } from "../actions";
-import { Location } from 'src/app/interfaces/locations';
+import { Location } from "src/app/interfaces/locations";
 
 export interface SampleState {
   suggestedLocations: Location[];
@@ -23,6 +24,13 @@ export const sampleReducer = createReducer(
   on(LoadSuggestedLocations, (state, { searchTerm }) => {
     return {
       ...state,
+    };
+  }),
+
+  on(ClearSuggestedLocations, (state) => {
+    return {
+      ...state,
+      suggestedLocations: [],
     };
   })
 );

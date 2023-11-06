@@ -15,27 +15,6 @@
   margin: 0;
 }
 
-.suggestions {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  border: 1px solid #ccc;
-  border-top: none;
-  max-height: 150px;
-  overflow-y: auto;
-  position: absolute;
-  z-index: 1;
-}
-
-.suggestion-item {
-  padding: 8px 16px;
-  cursor: pointer;
-  background-color: #f9f9f9;
-}
-
-.suggestion-item:hover {
-  background-color: #ddd;
-}
 
 .form-row {
   display: flex;
@@ -75,6 +54,7 @@ select {
   cursor: pointer;
   font-size: 16px;
   text-align: center;
+  margin-top: 8px;
 }
 
 .custom-button:disabled {

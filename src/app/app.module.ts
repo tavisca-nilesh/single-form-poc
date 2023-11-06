@@ -1,4 +1,4 @@
-import { NgModule } from "@angular/core";
+import { NgModule, isDevMode } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { EffectsModule } from "@ngrx/effects";
@@ -13,6 +13,7 @@ import {
   SearchDateSelectorComponent,
   JourneySelectorComponent,
 } from "./components";
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 export const sampleModuleReducers: ActionReducerMap<AppState, any> = {
   sample: sampleReducer,
@@ -30,7 +31,12 @@ export const sampleModuleReducers: ActionReducerMap<AppState, any> = {
     HttpClientModule,
     ReactiveFormsModule,
     StoreModule.forRoot(sampleModuleReducers),
+    StoreDevtoolsModule.instrument({
+      name: 'sample',
+      logOnly: true,
+    }),
     EffectsModule.forRoot([SuggestedLocationsEffects]),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
   ],
   providers: [],
   bootstrap: [AppComponent],

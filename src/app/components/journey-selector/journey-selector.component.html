@@ -1,3 +1,26 @@
-<p>
-  journey-selector works!
-</p>
+<div class="form-group" *ngIf="locationControl">
+  <label for="location">Location</label>
+  <input
+    style="width: 200px"
+    type="text"
+    [formControl]="locationControl"
+    class="custom-input"
+    (input)="onLocationInputChange($event)"
+    [value]="locationControl.value?.name || ''"
+  />
+  <div
+    *ngIf="locationControl?.hasError('required') && locationControl?.touched"
+    class="error-message"
+  >
+    Location is required.
+  </div>
+  <ul class="suggestions" *ngIf="suggestedLocations?.length">
+    <li
+      class="suggestion-item"
+      *ngFor="let location of suggestedLocations"
+      (click)="selectLocation(location)"
+    >
+      {{ location.name }}
+    </li>
+  </ul>
+</div>

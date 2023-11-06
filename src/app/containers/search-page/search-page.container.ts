@@ -1,10 +1,11 @@
 import { Component, OnInit } from "@angular/core";
-import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Store } from "@ngrx/store";
-import { LoadSuggestedLocations } from "../../store/actions";
-import { AppState } from "../../store/app.state";
-import { loadLocations } from "../../store/selectors";
-import { Location } from "../../interfaces/locations";
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from "@angular/forms";
 
 @Component({
   selector: "app-search-page",
@@ -13,21 +14,18 @@ import { Location } from "../../interfaces/locations";
 })
 export class SearchPageContainer implements OnInit {
   form: FormGroup | null = null;
-  suggestedLocations: Location[][] = [];
-  formDataJSON: string | null = null;
-  private loadLocations$ = this.store.select(loadLocations);
 
-  currentIndex = 0;
-  constructor(private fb: FormBuilder, private store: Store<AppState>) {}
+  formDataJSON: string | null = null;
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit() {
-    this.suggestedLocations.push([]);
     this.form = this.fb.group({
-      journeyType: ["oneWay", Validators.required],
-      passengerCount: [
-        1,
-        [Validators.required, Validators.min(1), Validators.max(4)],
-      ],
+      journeyType: new FormControl("oneWay", Validators.required),
+      passengerCount: new FormControl(1, [
+        Validators.required,
+        Validators.min(1),
+        Validators.max(4),
+      ]),
       journeys: this.fb.array([this.createJourneyGroup()]),
     });
 
@@ -45,10 +43,6 @@ export class SearchPageContainer implements OnInit {
 
       this.onJourneyTypeChange();
     });
-
-    this.loadLocations$.subscribe((suggestedLocations) => {
-      this.suggestedLocations[this.currentIndex] = [...suggestedLocations];
-    });
   }
 
   get journeys() {
@@ -64,36 +58,19 @@ export class SearchPageContainer implements OnInit {
   }
 
   addJourney() {
-    this.suggestedLocations.push([]);
     this.journeys.push(this.createJourneyGroup());
   }
 
   removeJourney(index: number) {
     if (this.journeys.length > 1) {
       this.journeys.removeAt(index);
-      this.suggestedLocations.splice(index, 1);
     }
   }
 
   onJourneyTypeChange() {
     while (this.journeys.length > 1) {
       this.journeys.removeAt(1);
-      this.suggestedLocations.splice(1, 1);
     }
-  }
-
-  onLocationInputChange(event: any, index: number) {
-    this.currentIndex = index;
-    const searchTerm = event?.target?.value;
-    this.suggestedLocations = [];
-    if (searchTerm && searchTerm.length >= 3) {
-      this.store.dispatch(LoadSuggestedLocations({ searchTerm: searchTerm }));
-    }
-  }
-
-  selectLocation(airport: Location, index: number) {
-    this.journeys.at(index).get("location")?.setValue(airport);
-    this.suggestedLocations[index] = [];
   }
 
   onSearch() {
