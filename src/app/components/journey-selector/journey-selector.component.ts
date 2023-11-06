@@ -1,15 +1,8 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'app-journey-selector',
-  template: `
-    <p>
-      journey-selector works!
-    </p>
-  `,
-  styles: [
-  ]
+  selector: "app-journey-selector",
+  templateUrl: "./journey-selector.component.html",
+  styleUrls: ["./journey-selector.component.css"],
 })
-export class JourneySelectorComponent {
-
-}
+export class JourneySelectorComponent {}

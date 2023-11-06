@@ -1,15 +1,8 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'app-search-date-selector',
-  template: `
-    <p>
-      search-date-selector works!
-    </p>
-  `,
-  styles: [
-  ]
+  selector: "app-search-date-selector",
+  templateUrl: "./search-date-selector.component.html",
+  styleUrls: ["./search-date-selector.component.css"],
 })
-export class SearchDateSelectorComponent {
-
-}
+export class SearchDateSelectorComponent {}
