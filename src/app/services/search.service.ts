@@ -1,5 +1,7 @@
 import { Injectable } from "@angular/core";
-import { of } from "rxjs";
+import { Subject, debounceTime, of, takeUntil } from "rxjs";
+import { Observable } from "rxjs";
+import { HttpClient } from "@angular/common/http";
 
 const airports = [
   {
@@ -143,12 +145,22 @@ const airports = [
     airportCode: "ZRH",
   },
 ];
-
 @Injectable({
   providedIn: "root",
 })
-export class SampleService {
-  getSuggestedLocations(query: string) {
+export class SearchService {
+  private apiUrl = "https://jsonplaceholder.typicode.com/users"; // Replace with your actual API URL
+  private destroy$ = new Subject<void>();
+
+  constructor(private http: HttpClient) {}
+
+  getSuggestedLocations(query: string): Observable<any[]> {
+    const params = { query }; // Set up any additional parameters for your API request
+
+    // return this.http
+    //   .get<any[]>(this.apiUrl, { params })
+    //   .pipe(debounceTime(1000), takeUntil(this.destroy$));
+
     const filteredLocations = airports.filter(
       (airport) =>
         airport.name.toLowerCase().includes(query.toLowerCase()) ||

@@ -1,8 +1,15 @@
 import { Injectable } from "@angular/core";
 import { Actions, ofType, createEffect } from "@ngrx/effects";
-import { EMPTY } from "rxjs";
-import { map, mergeMap, catchError, switchMap } from "rxjs/operators";
-import { SampleService } from "../../services/sample.service";
+import { EMPTY, Subject } from "rxjs";
+import {
+  map,
+  mergeMap,
+  catchError,
+  switchMap,
+  takeUntil,
+  debounceTime,
+} from "rxjs/operators";
+import { SearchService } from "../../services/search.service";
 import {
   LoadSuggestedLocations,
   LoadSuggestedLocationsSuccess,
@@ -11,11 +18,13 @@ import {
 
 @Injectable()
 export class SuggestedLocationsEffects {
+  private destroy$ = new Subject<void>();
+
   loadSuggestedLocations$ = createEffect((): any =>
     this.actions$.pipe(
       ofType(LoadSuggestedLocations),
       switchMap((action) =>
-        this.sampleService.getSuggestedLocations(action.searchTerm).pipe(
+        this.searchService.getSuggestedLocations(action.searchTerm).pipe(
           map((locations) =>
             LoadSuggestedLocationsSuccess({
               suggestedLocations: locations,
@@ -29,6 +38,6 @@ export class SuggestedLocationsEffects {
 
   constructor(
     private actions$: Actions,
-    private sampleService: SampleService
+    private searchService: SearchService
   ) {}
 }

@@ -88,3 +88,10 @@ select {
 .row2 {
   width: 70%;
 }
+
+.error-message {
+  color: red;
+  font-size: 0.9em;
+  position: absolute;
+}
+

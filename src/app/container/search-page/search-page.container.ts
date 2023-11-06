@@ -1,15 +1,15 @@
 import { Component, OnInit } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Store } from "@ngrx/store";
-import { LoadSuggestedLocations } from "../store/actions";
-import { AppState } from "../store/app.state";
-import { loadLocations } from "../store/selectors";
-import { Location } from "../interfaces/locations";
+import { LoadSuggestedLocations } from "../../store/actions";
+import { AppState } from "../../store/app.state";
+import { loadLocations } from "../../store/selectors";
+import { Location } from "../../interfaces/locations";
 
 @Component({
-  selector: "app-sample-form",
-  templateUrl: "./sample-form.component.html",
-  styleUrls: ["./sample-form.component.css"],
+  selector: "app-search-page",
+  templateUrl: "./search-page.container.html",
+  styleUrls: ["./search-page.container.css"],
 })
 export class SampleFormComponent implements OnInit {
   form: FormGroup | null = null;

@@ -12,6 +12,15 @@
         <option value="multiCity">Multi City</option>
       </select>
     </div>
+    <div
+      *ngIf="
+        form.get('journeyType')?.hasError('required') &&
+        form.get('journeyType')?.touched
+      "
+      class="error-message"
+    >
+      Journey Type is required.
+    </div>
     <div class="form-group">
       <label for="passengerCount">Passenger Count</label>
       <input
@@ -21,6 +30,33 @@
         min="1"
         max="4"
       />
+      <div
+        *ngIf="
+          form.get('passengerCount')?.hasError('required') &&
+          form.get('passengerCount')?.touched
+        "
+        class="error-message"
+      >
+        Passenger Count is required.
+      </div>
+      <div
+        *ngIf="
+          form.get('passengerCount')?.hasError('min') &&
+          form.get('passengerCount')?.touched
+        "
+        class="error-message"
+      >
+        Passenger Count must be at least 1.
+      </div>
+      <div
+        *ngIf="
+          form.get('passengerCount')?.hasError('max') &&
+          form.get('passengerCount')?.touched
+        "
+        class="error-message"
+      >
+        Passenger Count cannot exceed 4.
+      </div>
     </div>
   </div>
   <div formArrayName="journeys">
@@ -39,6 +75,9 @@
               (input)="onLocationInputChange($event, i)"
               [value]="journey.get('location')?.value?.name || ''"
             />
+            <div *ngIf="journey.get('location')?.hasError('required') && journey.get('location')?.touched" class="error-message">
+              Location is required.
+            </div>
             <ul
               class="suggestions"
               *ngIf="suggestedLocations[i] && suggestedLocations[i].length > 0"
@@ -59,6 +98,9 @@
               formControlName="startDate"
               class="custom-input"
             />
+            <div *ngIf="journey.get('startDate')?.hasError('required') && journey.get('startDate')?.touched" class="error-message">
+              Start Date is required.
+            </div>
           </div>
           <div
             class="form-group"
@@ -70,6 +112,9 @@
               formControlName="returnDate"
               class="custom-input"
             />
+            <div *ngIf="journey.get('returnDate')?.hasError('required') && journey.get('returnDate')?.touched" class="error-message">
+              Return Date is required.
+            </div>
           </div>
           <button
             type="button"
@@ -100,28 +145,6 @@
     >
       Search
     </button>
-  </div>
-  <div *ngIf="form.invalid" class="error-summary">
-    <h4>Fill All Required Fields</h4>
-    <ul>
-      <li *ngIf="form.get('journeyType')?.hasError('required')">
-        Journey Type is required
-      </li>
-      <li *ngIf="form.get('passengerCount')?.hasError('required')">
-        Passenger Count is required
-      </li>
-      <li
-        *ngIf="
-          form.get('passengerCount')?.hasError('min') ||
-          form.get('passengerCount')?.hasError('max')
-        "
-      >
-        Passenger Count must be between 1 and 4
-      </li>
-      <li *ngIf="form.get('location')?.hasError('required')">
-        Location is required
-      </li>
-    </ul>
   </div>
 </form>
 

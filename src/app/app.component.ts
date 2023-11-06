@@ -4,10 +4,8 @@ import { Component } from "@angular/core";
   selector: "app-root",
   template: `
     <!--The content below is only a placeholder and can be replaced.-->
-    <app-sample-form></app-sample-form>
+    <app-search-page></app-search-page>
   `,
   styles: [],
 })
-export class AppComponent {
-  title = "sample-form-project";
-}
+export class AppComponent {}
