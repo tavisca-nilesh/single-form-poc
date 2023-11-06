@@ -4,17 +4,26 @@ import { BrowserModule } from "@angular/platform-browser";
 import { EffectsModule } from "@ngrx/effects";
 import { ActionReducerMap, StoreModule } from "@ngrx/store";
 import { AppComponent } from "./app.component";
-import { SampleFormComponent } from "./container/search-page/search-page.container";
+import { SearchPageContainer } from "./containers";
 import { AppState } from "./store/app.state";
 import { SuggestedLocationsEffects } from "./store/effects";
 import { sampleReducer } from "./store/reducers";
 import { HttpClientModule } from "@angular/common/http";
+import {
+  SearchDateSelectorComponent,
+  JourneySelectorComponent,
+} from "./components";
 
 export const sampleModuleReducers: ActionReducerMap<AppState, any> = {
   sample: sampleReducer,
 };
 @NgModule({
-  declarations: [AppComponent, SampleFormComponent],
+  declarations: [
+    AppComponent,
+    SearchPageContainer,
+    SearchDateSelectorComponent,
+    JourneySelectorComponent,
+  ],
   imports: [
     BrowserModule,
     FormsModule,

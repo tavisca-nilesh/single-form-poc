@@ -11,7 +11,7 @@ import { Location } from "../../interfaces/locations";
   templateUrl: "./search-page.container.html",
   styleUrls: ["./search-page.container.css"],
 })
-export class SampleFormComponent implements OnInit {
+export class SearchPageContainer implements OnInit {
   form: FormGroup | null = null;
   suggestedLocations: Location[][] = [];
   formDataJSON: string | null = null;
