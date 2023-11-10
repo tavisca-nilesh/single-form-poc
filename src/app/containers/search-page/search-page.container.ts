@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import {
   FormArray,
   FormBuilder,
@@ -15,21 +15,34 @@ import {
 export class SearchPageContainer implements OnInit {
   form: FormGroup | null = null;
 
-  formDataJSON: string | null = null;
-  constructor(private fb: FormBuilder) {}
+  formData: any = {
+    journeyType: "oneWay",
+    passengerCount: 1,
+    journeys: [
+      {
+        location: {
+          id: 1,
+          name: "John F. Kennedy International Airport",
+          city: "New York",
+          country: "United States",
+          airportCode: "JFK",
+        },
+        startDate: "2023-11-22",
+        returnDate: "",
+      },
+    ],
+  };
+
+  formDataJSON: string = JSON.stringify(this.formData, null, 2);
+
+  constructor(
+    private fb: FormBuilder,
+    private _changeDetectionRef: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
-    this.form = this.fb.group({
-      journeyType: new FormControl("oneWay", Validators.required),
-      passengerCount: new FormControl(1, [
-        Validators.required,
-        Validators.min(1),
-        Validators.max(4),
-      ]),
-      journeys: this.fb.array([this.createJourneyGroup()]),
-    });
-
-    this.form.get("journeyType")?.valueChanges.subscribe((value) => {
+    this.initializeSearchForm();
+    this.form?.get("journeyType")?.valueChanges.subscribe((value) => {
       if (value === "roundTrip") {
         const firstJourney = this.journeys.at(0) as FormGroup;
         firstJourney.get("returnDate")?.setValidators([Validators.required]);
@@ -42,6 +55,18 @@ export class SearchPageContainer implements OnInit {
       }
 
       this.onJourneyTypeChange();
+    });
+  }
+
+  private initializeSearchForm() {
+    this.form = this.fb.group({
+      journeyType: new FormControl("oneWay", Validators.required),
+      passengerCount: new FormControl(1, [
+        Validators.required,
+        Validators.min(1),
+        Validators.max(4),
+      ]),
+      journeys: this.fb.array([this.createJourneyGroup()]),
     });
   }
 
@@ -68,15 +93,42 @@ export class SearchPageContainer implements OnInit {
   }
 
   onJourneyTypeChange() {
-    while (this.journeys.length > 1) {
-      this.journeys.removeAt(1);
-    }
+    // while (this.journeys.length > 1) {
+    //   this.journeys.removeAt(1);
+    // }
+    this.removeInvalidLocations();
   }
 
   onSearch() {
     if (this.form?.valid) {
-      const formData = this.form?.value;
-      this.formDataJSON = JSON.stringify(formData, null, 2);
+      const formData = { ...this.form?.value };
+      if (formData.journeyType !== "multiCity") {
+        formData.journeys = [this.formData.journeys[0]];
+      }
+      this.formDataJSON = JSON.stringify(formData, null, 2) as any;
     }
+  }
+
+  updateFormFromJSON() {
+    try {
+      const parsedData = JSON.parse(this.formDataJSON);
+      this.formData = parsedData;
+      //this.initializeSearchForm();
+      this.form?.patchValue(parsedData);
+      this._changeDetectionRef.detectChanges();
+    } catch (error) {
+      console.error("Invalid JSON input:", error);
+    }
+  }
+
+  removeInvalidLocations() {
+    const journeysFormArray = this.form?.get("journeys") as FormArray;
+    const invalidIndexes = journeysFormArray.controls
+      .map((control, index) => (control.invalid ? index : -1))
+      .filter((index) => index !== -1);
+
+    invalidIndexes.reverse().forEach((index) => {
+      if (index !== 0) journeysFormArray.removeAt(index);
+    });
   }
 }

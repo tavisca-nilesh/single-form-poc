@@ -62,54 +62,51 @@
   <div formArrayName="journeys">
     <div
       class="form-row row2"
-      *ngFor="let journey of journeys.controls; let i = index"
+      *ngFor="let journey of journeys.controls; let i = index; let firstItem= first"
       [formGroupName]="i"
     >
-      <div style="display: flex; flex-direction: row">
-        <div class="form-group">
+
+      <div *ngIf="form.get('journeyType')?.value !== 'multiCity'; else loadAll " style="display: flex; flex-direction: row">
+        <div *ngIf="firstItem" class="form-group">
           <app-journey-selector
             [locationControl]="$any(journey.get('location'))"
           ></app-journey-selector>
         </div>
-        <div class="form-group">
-          <label for="startDate">Start Date</label>
-          <input type="date" formControlName="startDate" class="custom-input" />
-          <div
-            *ngIf="journey.get('startDate')?.hasError('required') && journey.get('startDate')?.touched"
-            class="error-message"
-          >
-            Start Date is required.
-          </div>
+        <div *ngIf="firstItem">
+          <app-search-date-selector
+            [startDateControl]="$any(journey.get('startDate'))"
+            [returnDateControl]="$any(journey.get('returnDate'))"
+            [isRoundTrip]="form.get('journeyType')?.value === 'roundTrip'"
+          ></app-search-date-selector>
         </div>
-        <div
-          class="form-group"
-          *ngIf="form?.get('journeyType')?.value === 'roundTrip'"
-        >
-          <label for="returnDate">Return Date</label>
-          <input
-            type="date"
-            formControlName="returnDate"
-            class="custom-input"
-          />
-          <div
-            *ngIf="journey.get('returnDate')?.hasError('required') && journey.get('returnDate')?.touched"
-            class="error-message"
-          >
-            Return Date is required.
-          </div>
-        </div>
-        <button
-          type="button"
-          *ngIf="
-              form.get('journeyType')?.value === 'multiCity' &&
-              i >= 1 &&
-              i === journeys.controls.length - 1
-            "
-          (click)="removeJourney(i)"
-        >
-          X
-        </button>
       </div>
+      <ng-template #loadAll>
+        <div style="display: flex; flex-direction: row">
+          <div class="form-group">
+            <app-journey-selector
+              [locationControl]="$any(journey.get('location'))"
+            ></app-journey-selector>
+          </div>
+          <div>
+            <app-search-date-selector
+              [startDateControl]="$any(journey.get('startDate'))"
+              [returnDateControl]="$any(journey.get('returnDate'))"
+              [isRoundTrip]="form.get('journeyType')?.value === 'roundTrip'"
+            ></app-search-date-selector>
+          </div>
+          <button
+            type="button"
+            *ngIf="
+                form.get('journeyType')?.value === 'multiCity' &&
+                i >= 1 &&
+                i === journeys.controls.length - 1
+              "
+            (click)="removeJourney(i)"
+          >
+            X
+          </button>
+        </div>
+      </ng-template>
     </div>
   </div>
   <div *ngIf="form.get('journeyType')?.value === 'multiCity'" class="form-row">
@@ -129,7 +126,21 @@
   </div>
 </form>
 
-<div *ngIf="formDataJSON" class="json-output">
+<!-- <div *ngIf="formDataJSON" class="json-output">
   <h4>Form Data in JSON Format:</h4>
   <pre>{{ formDataJSON }}</pre>
+</div> -->
+
+<div>
+  <label for="jsonInput">JSON Input:</label>
+  <textarea
+    id="jsonInput"
+    [(ngModel)]="formDataJSON"
+    rows="10"
+    cols="50"
+  ></textarea>
+  <br />
+  <button class="custom-button" (click)="updateFormFromJSON()">
+    Update Form
+  </button>
 </div>

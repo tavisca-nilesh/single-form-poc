@@ -21,6 +21,7 @@ export class JourneySelectorComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
   constructor(private searchService: SearchService) {}
   ngOnInit(): void {
+    this.locationControl?.get('name');
     this.inputChanged$
       .pipe(
         // debounceTime(300), // Wait for 300ms after the last keystroke
@@ -40,8 +41,8 @@ export class JourneySelectorComponent implements OnInit, OnDestroy {
 
   onLocationInputChange(event: any) {
     const searchTerm = (event.target as HTMLInputElement).value;
-    this.inputChanged$.next(searchTerm);
-    return;
+    // this.inputChanged$.next(searchTerm);
+    // return;
 
     if (searchTerm && searchTerm.length >= 3) {
       this.searchService

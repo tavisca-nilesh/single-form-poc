@@ -3,7 +3,7 @@
   <input
     style="width: 200px"
     type="text"
-    [formControl]="locationControl"
+    [formControl]="$any(locationControl)"
     class="custom-input"
     (input)="onLocationInputChange($event)"
     [value]="locationControl.value?.name || ''"

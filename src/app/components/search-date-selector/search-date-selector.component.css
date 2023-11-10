@@ -1,0 +1,25 @@
+.search-date {
+  display: flex;
+}
+label {
+  display: block;
+}
+
+input,
+select {
+  width: 90%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-group {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9em;
+  position: absolute;
+}
