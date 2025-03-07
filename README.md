@@ -5,7 +5,7 @@
 This Angular application serves as a POC to explore whether a single form can persist data upon changing the journey type. The app aims to demonstrate the ability sto maintain form data even when the user switches between different journey types within the application.
 
 ## How to Run the Application
-s
+
 To run this application locally, follow these steps:
 
 1. **Clone the Repository:**
