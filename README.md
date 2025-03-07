@@ -2,7 +2,7 @@
 
 ## Overview
 
-This Angular application serves as a POC to explore whether a single form can persist data upon changing the journey type. The app aims to demonstrate the ability to maintain form data even when the user switches between different journey types within the application.
+This Angular application serves as a POC to explore whether a single form can persist data upon changing the journey type. The app aims to demonstrate the ability sto maintain form data even when the user switches between different journey types within the application.
 
 ## How to Run the Application
 
